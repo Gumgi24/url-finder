@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Link Scanner</title>
+</head>
+<body>
+    <h1>Link Scanner</h1>
+    <form action="/scan" method="post">
+        <label for="url">Enter URL:</label>
+        <input type="text" id="url" name="url" required>
+        <button type="submit">Scan</button>
+    </form>
+    {% if links %}
+        <h2>Links Found:</h2>
+        <ul>
+            {% for link in links %}
+                <li><a href="{{ link }}" target="_blank">{{ link }}</a></li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</body>
+</html>
