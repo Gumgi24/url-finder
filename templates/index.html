@@ -57,7 +57,7 @@
 			<div class="list-group">
 			{% if links %}
 				{% for link in links %}
-					<a href="{{ link }}" class="list-group-item list-group-item-action animate__animated animate__slideInLeft">{{ link }}</a>
+					<a href="{{ link }}" target="_blank" class="list-group-item list-group-item-action animate__animated animate__slideInLeft">{{ link }}</a>
 				{% endfor %}
 			{% else %}
 				<p class="text-muted">No results yet.</p>

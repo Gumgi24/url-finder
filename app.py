@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request
 import requests
 from bs4 import BeautifulSoup
-from urllib.parse import urlparse  # added
+from urllib.parse import urlparse, urljoin  # modified import
 
 app = Flask(__name__)
 
@@ -16,7 +16,8 @@ def scan():
         response = requests.get(url)
         response.raise_for_status()
         soup = BeautifulSoup(response.text, 'html.parser')
-        links = [urlparse(a['href']).path for a in soup.find_all('a', href=True) if urlparse(a['href']).path]
+        # Use urljoin to combine the base URL with each href
+        links = [urljoin(url, a['href']) for a in soup.find_all('a', href=True)]
         return render_template('index.html', links=links)
     except Exception as e:
         return f"An error occurred: {e}"
