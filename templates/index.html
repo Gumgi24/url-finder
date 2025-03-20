@@ -9,16 +9,17 @@
 	<!-- Animate.css -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 	<style>
-		/* Custom CSS for subtle effects */
-		body { padding-top: 70px; }
+		/* Custom CSS for red, white, black theme */
+		body { padding-top: 70px; background-color: white; color: rgb(175, 5, 5); }
 		.navbar { box-shadow: 0 2px 4px rgba(0,0,0,.1); }
-		.card { margin-bottom: 20px; }
+		.card { margin-bottom: 20px; border: 1px solid black; }
 		#progress { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; }
+		.toggle-btn { margin-left: auto; }
 	</style>
 </head>
 <body>
 	<!-- Navigation Menu -->
-	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+	<nav class="navbar navbar-expand-lg navbar-dark bg-danger fixed-top">
 	  <div class="container-fluid">
 		<a class="navbar-brand" href="#">Trouveur d'URL</a>
 		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -73,6 +74,7 @@
 					<div class="card mb-2 domain-group">
 						<div class="card-header d-flex justify-content-between align-items-center">
 							<span>{{ domain }}</span>
+							<button class="btn btn-sm btn-outline-secondary" onclick="toggleCardBody(this)">Toggle</button>
 							<button class="btn btn-sm btn-outline-secondary" onclick="copyGroup('{{ domain }}')">Copier</button>
 						</div>
 						<div class="card-body">
@@ -94,15 +96,15 @@
 			<nav>
 			  <ul class="pagination">
 				<li class="page-item {% if page <= 1 %}disabled{% endif %}">
-				  <a class="page-link" href="?page={{ page - 1 }}">&laquo;</a>
+				  <a class="page-link" href="/scan?url={{ scan_url }}&page={{ page - 1 }}">&laquo;</a>
 				</li>
 				{% for p in range(1, total_pages+1) %}
 				<li class="page-item {% if p == page %}active{% endif %}">
-				  <a class="page-link" href="?page={{ p }}">{{ p }}</a>
+				  <a class="page-link" href="/scan?url={{ scan_url }}&page={{ p }}">{{ p }}</a>
 				</li>
 				{% endfor %}
 				<li class="page-item {% if page >= total_pages %}disabled{% endif %}">
-				  <a class="page-link" href="?page={{ page + 1 }}">&raquo;</a>
+				  <a class="page-link" href="/scan?url={{ scan_url }}&page={{ page + 1 }}">&raquo;</a>
 				</li>
 			  </ul>
 			</nav>
@@ -112,7 +114,7 @@
 		<!-- About Section -->
 		<section id="about-section" class="mt-5">
 			<h2>À propos</h2>
-			<p>Cet outil récupère une URL et extrait les chemins disponibles, les affichant avec une interface moderne et animée.</p>
+			<p>Cet outil récupère une URL et extrait les chemins disponibles.</p>
 		</section>
 	</div>
 
@@ -140,6 +142,12 @@
 			const domain = group.querySelector('.card-header span').innerText.toLowerCase();
 			group.style.display = domain.includes(filter) ? "" : "none";
 		}
+	}
+
+	// Toggle domain group card body
+	function toggleCardBody(button) {
+		const cardBody = button.closest('.card').querySelector('.card-body');
+		cardBody.style.display = cardBody.style.display === "none" ? "" : "none";
 	}
 
 	// Copy links for a domain group to clipboard

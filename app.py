@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse, urljoin
@@ -20,11 +20,19 @@ PAGE_SIZE = 5
 def index():
     return render_template('index.html', domain_groups=None, page=1, total_pages=0, search_query="")
 
-@app.route('/scan', methods=['POST'])
+@app.route('/scan', methods=['GET', 'POST'])
 def scan():
-    url = request.form['url']
-    if not is_valid_url(url):
-        return "Invalid URL provided.", 400
+    if request.method == 'POST':
+        url = request.form['url']
+        if not is_valid_url(url):
+            return "Invalid URL provided.", 400
+        # Redirect to GET with url parameter and page=1
+        return redirect(url_for('scan', url=url, page=1))
+    
+    # GET: retrieve URL from query string
+    url = request.args.get('url')
+    if not url or not is_valid_url(url):
+        return "Invalid or missing URL.", 400
 
     try:
         response = requests.get(url)
@@ -48,7 +56,7 @@ def scan():
         paginated_domains = sorted_domains[start:end]
         paginated_groups = {domain: domain_groups[domain] for domain in paginated_domains}
 
-        return render_template('index.html', domain_groups=paginated_groups, page=page, total_pages=total_pages, search_query="")
+        return render_template('index.html', domain_groups=paginated_groups, page=page, total_pages=total_pages, scan_url=url)
     except Exception as e:
         return f"An error occurred: {e}"
 
